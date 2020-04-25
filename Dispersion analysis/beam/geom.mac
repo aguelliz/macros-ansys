@@ -1,0 +1,36 @@
+/PREP7
+*ask,L, length,10
+*ask,d,height of beam section,1
+
+
+dist = 2*L
+kx = 0
+ky = 0
+pi = 3.14159
+
+
+/PREP7
+
+k,1,0,0,0
+k,2,0,0.5*L,0
+k,3,0.5*L,0,0
+k,4,0,-0.5*L,0
+k,5,-0.5*L,0,0
+
+l,1,2
+l,1,3
+l,1,4
+l,1,5
+
+k,6,0+dist,0,0
+k,7,0+dist,0.5*L,0
+k,8,0.5*L+dist,0,0
+k,9,0+dist,-0.5*L,0
+k,10,-0.5*L+dist,0,0
+
+l,6,7
+l,6,8
+l,6,9
+l,6,10
+
+finish

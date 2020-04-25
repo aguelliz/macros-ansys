@@ -1,0 +1,17 @@
+/prep7,
+!assign material properties and mesh
+*ask,t,thickness,1
+et,1,181
+sectype,1,shell
+secdata,t
+
+!assume metal
+mp,ex,1,2.1e5
+mp,nuxy,1,0.3
+aatt,1,,1,,1
+eshape,0
+*ask,le,longitud element,1
+esize,le
+amesh,all
+eplot
+finish

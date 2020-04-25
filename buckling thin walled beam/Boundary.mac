@@ -1,0 +1,19 @@
+/prep7
+!create Boundary conditions on bottom
+nsel,s,loc,z,-L
+d,all,uz
+d,all,ux
+d,all,uy
+allsel
+
+!BC on top, and coupling of displacements in y
+nsel,s,loc,z,0
+cp,1,uz,all
+d,all,ux
+d,all,uy
+*get,nt,node,0,num,min
+allsel
+
+!apply force of value 1 on the top
+f,nt,fz,-1
+

@@ -1,0 +1,23 @@
+!prestress to calculate the geometric matrix
+/solu
+antype,static
+pstress,on
+solve
+fini
+
+allsel
+fini
+
+!find eigen modes
+*ask,modess,number of modes,5
+
+/solu
+antype,buckle,
+bucopt,subs,modess
+solve
+fini
+
+!plot deformed shape of first mode
+/POST1
+set,first
+pldisp

@@ -1,0 +1,27 @@
+/prep7
+!creation of the section (U shaped)
+k,1,-10,10,0
+k,2,-10,0,0
+k,3,10,0,0
+k,4,10,10,0
+
+l,1,2
+l,2,3
+l,3,4
+
+*ask,L,length,200
+!creation of the line to extrude the section along
+k,5,0,0,0
+k,6,0,0,-L
+
+l,5,6
+!extrude the lines to create the shell
+adrag,1,2,3,,,,4
+
+ldele,4
+kdele,5,6
+
+aplot
+finish
+
+

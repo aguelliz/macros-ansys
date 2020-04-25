@@ -1,0 +1,239 @@
+/PREP7
+
+L = 10
+lamda = 10
+d = 2*sqrt(3)*L/lamda
+ro = 1
+E = 2000
+omega = 0.5*3.14159*sqrt(E*d*d/(12*ro*L*L*L*L))
+dist = 2*L
+kx = 0
+ky = 0
+pi = 3.14159
+np = 20
+
+/nopr
+*dim,vec,table,3*np
+*dim,F,table,3*np,8
+
+
+/PREP7
+
+k,1,0,0,0
+k,2,0,0.5*L,0
+k,3,0.5*L,0,0
+k,4,0,-0.5*L,0
+k,5,-0.5*L,0,0
+
+l,1,2
+l,1,3
+l,1,4
+l,1,5
+
+k,6,0+dist,0,0
+k,7,0+dist,0.5*L,0
+k,8,0.5*L+dist,0,0
+k,9,0+dist,-0.5*L,0
+k,10,-0.5*L+dist,0,0
+
+l,6,7
+l,6,8
+l,6,9
+l,6,10
+
+et,1,beam188
+sectype,1,beam,rect
+secdata,d,1
+mp,ex,1,E
+mp,nuxy,1,0.3
+mp,dens,1,ro
+lsel,all
+latt,1,1,1, , , ,1
+esize,,10
+lmesh,1,8
+
+
+allsel
+nsel,s,loc,x,0
+nsel,r,loc,y,0.5*L
+*get,ntreal,node,,num,max 
+allsel
+nsel,s,loc,x,0+dist
+nsel,r,loc,y,0.5*L
+*get,ntimag,node,,num,max
+allsel
+nsel,s,loc,x,0
+nsel,r,loc,y,-0.5*L
+*get,nbreal,node,,num,max 
+allsel
+nsel,s,loc,x,0+dist
+nsel,r,loc,y,-0.5*L
+*get,nbimag,node,,num,max
+allsel
+nsel,s,loc,x,0.5*L
+nsel,r,loc,y,0
+*get,nrreal,node,,num,max 
+allsel
+nsel,s,loc,x,0.5*L+dist
+nsel,r,loc,y,0
+*get,nrimag,node,,num,max
+allsel
+nsel,s,loc,x,-0.5*L
+nsel,r,loc,y,0
+*get,nlreal,node,,num,max 
+allsel
+nsel,s,loc,x,-0.5*L+dist
+nsel,r,loc,y,0
+*get,nlimag,node,,num,max
+allsel
+
+*do,i,1,3*np
+/prep7
+
+
+!bloch BC
+
+!in y
+ce,1,0,ntreal,ux,1,nbreal,ux,-cos(ky),nbimag,ux,sin(ky)
+ce,2,0,ntreal,uy,1,nbreal,uy,-cos(ky),nbimag,uy,sin(ky)
+ce,3,0,ntreal,rotz,1,nbreal,rotz,-cos(ky),nbimag,rotz,sin(ky)
+
+ce,4,0,ntimag,ux,1,nbimag,ux,-cos(ky),nbreal,ux,-sin(ky)
+ce,5,0,ntimag,uy,1,nbimag,uy,-cos(ky),nbreal,uy,-sin(ky)
+ce,6,0,ntimag,rotz,1,nbimag,rotz,-cos(ky),nbreal,rotz,-sin(ky)
+
+!in x
+ce,7,0,nlreal,ux,1,nrreal,ux,-cos(kx),nrimag,ux,sin(kx)
+ce,8,0,nlreal,uy,1,nrreal,uy,-cos(kx),nrimag,uy,sin(kx)
+ce,9,0,nlreal,rotz,1,nrreal,rotz,-cos(kx),nrimag,rotz,sin(kx)
+
+ce,10,0,nlimag,ux,1,nrimag,ux,-cos(kx),nrreal,ux,-sin(kx)
+ce,11,0,nlimag,uy,1,nrimag,uy,-cos(kx),nrreal,uy,-sin(kx)
+ce,12,0,nlimag,rotz,1,nrimag,rotz,-cos(kx),nrreal,rotz,-sin(kx)
+
+
+d,all,uz
+d,all,rotx
+d,all,roty
+
+fini
+
+/SOLU   
+ANTYPE,MODAL
+MODOPT,LANB,18,0,0,,OFF   
+PSTRESS,0
+SOLVE 
+
+/POST1
+set,list,2
+set,first
+*get,F1,active,0,set,freq
+set,next
+set,next
+*get,F2,active,0,set,freq
+set,next
+set,next
+*get,F3,active,0,set,freq
+set,next
+set,next
+*get,F4,active,0,set,freq
+set,next
+set,next
+*get,F5,active,0,set,freq
+set,next
+set,next
+*get,F6,active,0,set,freq
+set,next
+set,next
+*get,F7,active,0,set,freq
+set,next
+set,next
+*get,F8,active,0,set,freq
+set,next
+set,next
+*get,F9,active,0,set,freq
+
+
+/com, i = %i%
+F(i,1) = F1/omega
+F(i,2) = F2/omega
+F(i,3) = F3/omega
+F(i,4) = F4/omega
+F(i,5) = F5/omega
+F(i,6) = F6/omega
+F(i,7) = F7/omega
+F(i,8) = F8/omega
+vec(i) = i
+
+*if,i,LE,np,then
+kx = kx + pi/(np-1)
+*endif
+*if,i,GT,np,and,i,LE,2*np,then
+ky = ky + pi/(np-1)
+*endif
+*if,i,GT,2*np,and,i,LE,3*np,then
+ky = ky - pi/(np-1)
+kx = kx - pi/(np-1)
+*endif
+
+
+*enddo
+
+
+*vplot,vec,F,2,3,4,5,6,7,8
+
+!*status,F !to list variable
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

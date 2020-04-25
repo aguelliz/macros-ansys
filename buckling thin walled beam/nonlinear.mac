@@ -1,0 +1,48 @@
+
+
+/prep7,
+
+*ask,f,imperfection factor,1
+*ask,modenum,modenumber,1
+upgeom,f,1,modenum,file,rst !change file for whichever 
+!jobname you are using
+
+fini
+
+/prep7
+
+fdele,all,all
+
+*ask,di,compressive displacement,1
+
+d,nt,uz,-di
+
+!characterizing material as bilinear plasticity with Et=E/100
+tb,biso,1,1
+tbtemp,0
+*ask,fy,yield stress,500
+tbdata,1,fy,2100
+
+fini
+
+/solu
+antype,static,new
+nlgeom,on
+nropt,full
+neqit,100
+autots,on
+nsubst,80,200,50
+
+outres,all,all
+solve
+fini
+
+/POST26 
+FILLDATA,191,,,,1,1 
+REALVAR,191,191 
+RFORCE,2,nt,F,Z, FZ_2
+STORE,MERGE 
+NSOL,3,nt,U,Z, UZ_3, 
+STORE,MERGE 
+XVAR,3  
+PLVAR,2,

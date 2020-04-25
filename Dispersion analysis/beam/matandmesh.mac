@@ -1,0 +1,52 @@
+/PREP7
+*ask,E,youngs modulus (MPa),2000
+*ask,ro,density (tn/mm3),1e-9
+*ask,ne,number elements per beam,10
+
+et,1,beam188
+sectype,1,beam,rect
+secdata,d,1
+mp,ex,1,E
+mp,nuxy,1,0.3
+mp,dens,1,ro
+lsel,all
+latt,1,1,1, , , ,1
+esize,,ne
+lmesh,1,8
+
+
+allsel
+nsel,s,loc,x,0
+nsel,r,loc,y,0.5*L
+*get,ntreal,node,,num,max 
+allsel
+nsel,s,loc,x,0+dist
+nsel,r,loc,y,0.5*L
+*get,ntimag,node,,num,max
+allsel
+nsel,s,loc,x,0
+nsel,r,loc,y,-0.5*L
+*get,nbreal,node,,num,max 
+allsel
+nsel,s,loc,x,0+dist
+nsel,r,loc,y,-0.5*L
+*get,nbimag,node,,num,max
+allsel
+nsel,s,loc,x,0.5*L
+nsel,r,loc,y,0
+*get,nrreal,node,,num,max 
+allsel
+nsel,s,loc,x,0.5*L+dist
+nsel,r,loc,y,0
+*get,nrimag,node,,num,max
+allsel
+nsel,s,loc,x,-0.5*L
+nsel,r,loc,y,0
+*get,nlreal,node,,num,max 
+allsel
+nsel,s,loc,x,-0.5*L+dist
+nsel,r,loc,y,0
+*get,nlimag,node,,num,max
+allsel
+
+finish

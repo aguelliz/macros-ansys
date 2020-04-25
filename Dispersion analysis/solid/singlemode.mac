@@ -1,0 +1,91 @@
+/prep7
+*ask,j,step,20
+*ask,np,number of points,20
+
+*if,j,LE,np+1,then
+kx = (j-1)*pi/(np)
+*endif
+*if,j,GT,np+1,and,j,LE,2*np+1,then
+ky = (j-1-np)*pi/(np)
+kx = pi
+*endif
+*if,j,GT,2*np+1,and,j,LE,3*np+1,then
+ky = (3*np-j+1)*pi/(np)
+kx = (3*np-j+1)*pi/(np)
+*endif
+
+/prep7
+cedele,all
+
+!top and bottom
+
+*do,i,1,11
+
+nsel,s,loc,y,L/2
+nsel,r,loc,x,-d/2+Le*(i-1)
+*get,ntreal,node,,num,min 
+allsel
+nsel,s,loc,y,-L/2
+nsel,r,loc,x,-d/2+Le*(i-1)
+*get,nbreal,node,,num,min 
+allsel
+
+nsel,s,loc,y,L/2-tole,L/2+tole
+nsel,r,loc,x,dist-d/2+Le*(i-1)-tole,dist-d/2+Le*(i-1)+tole
+*get,ntimg,node,,num,min 
+allsel
+nsel,s,loc,y,-L/2-0.025,-L/2+0.025
+nsel,r,loc,x,dist-d/2+Le*(i-1)-tole,dist-d/2+Le*(i-1)+tole
+*get,nbimg,node,,num,min 
+allsel
+
+ce,next,0,ntreal,ux,1,nbreal,ux,-cos(ky),nbimg,ux,sin(ky)
+ce,next,0,ntreal,uy,1,nbreal,uy,-cos(ky),nbimg,uy,sin(ky)
+
+ce,next,0,ntimg,ux,1,nbimg,ux,-cos(ky),nbreal,ux,-sin(ky)
+ce,next,0,ntimg,uy,1,nbimg,uy,-cos(ky),nbreal,uy,-sin(ky)
+
+*enddo
+
+!right and left
+
+
+*do,i,1,11
+
+nsel,s,loc,y,-d/2+Le*(i-1)
+nsel,r,loc,x,-L/2
+*get,nlreal,node,,num,max 
+allsel
+nsel,s,loc,y,-d/2+Le*(i-1)
+nsel,r,loc,x,L/2
+*get,nrreal,node,,num,max 
+allsel
+
+nsel,s,loc,y,-d/2+Le*(i-1)-tole,-d/2+Le*(i-1)+tole
+nsel,r,loc,x,-L/2-tole+dist,-L/2+tole+dist
+*get,nlimg,node,,num,max 
+allsel
+nsel,s,loc,y,-d/2+Le*(i-1)-tole,-d/2+Le*(i-1)+tole
+nsel,r,loc,x,L/2-tole+dist,L/2+tole+dist
+*get,nrimg,node,,num,max 
+allsel
+
+ce,next,0,nlreal,ux,1,nrreal,ux,-cos(kx),nrimg,ux,sin(kx)
+ce,next,0,nlreal,uy,1,nrreal,uy,-cos(kx),nrimg,uy,sin(kx)
+
+ce,next,0,nlimg,ux,1,nrimg,ux,-cos(kx),nrreal,ux,-sin(kx)
+ce,next,0,nlimg,uy,1,nrimg,uy,-cos(kx),nrreal,uy,-sin(kx)
+
+*enddo
+
+!d,all,uz
+!d,all,rotx
+!d,all,roty
+
+fini
+
+/SOLU   
+ANTYPE,MODAL
+MODOPT,subsp,50,0,0,,OFF   
+PSTRESS,0
+SOLVE 

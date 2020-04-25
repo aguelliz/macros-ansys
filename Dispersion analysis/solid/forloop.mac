@@ -1,0 +1,139 @@
+/Prep7
+*ask,np,number of datapoints,20
+*ask,nmodes,number of modes,8
+
+kx = 0
+ky = 0
+pi = acos(-1)
+
+
+/nopr
+*dim,vec,table,3*np+1
+*dim,F,table,3*np+1,nmodes
+!bloch BC
+
+*do,j,1,3*np+3
+/prep7
+cedele,all
+
+
+!top and bottom
+
+
+*do,i,1,11
+
+nsel,s,loc,y,L/2
+nsel,r,loc,x,-d/2+Le*(i-1)
+*get,ntreal,node,,num,min 
+allsel
+nsel,s,loc,y,-L/2
+nsel,r,loc,x,-d/2+Le*(i-1)
+*get,nbreal,node,,num,min 
+allsel
+
+nsel,s,loc,y,L/2-tole,L/2+tole
+nsel,r,loc,x,dist-d/2+Le*(i-1)-tole,dist-d/2+Le*(i-1)+tole
+*get,ntimg,node,,num,min 
+allsel
+nsel,s,loc,y,-L/2-0.025,-L/2+0.025
+nsel,r,loc,x,dist-d/2+Le*(i-1)-tole,dist-d/2+Le*(i-1)+tole
+*get,nbimg,node,,num,min 
+allsel
+
+ce,next,0,ntreal,ux,1,nbreal,ux,-cos(ky),nbimg,ux,sin(ky)
+ce,next,0,ntreal,uy,1,nbreal,uy,-cos(ky),nbimg,uy,sin(ky)
+
+ce,next,0,ntimg,ux,1,nbimg,ux,-cos(ky),nbreal,ux,-sin(ky)
+ce,next,0,ntimg,uy,1,nbimg,uy,-cos(ky),nbreal,uy,-sin(ky)
+
+*enddo
+
+!right and left
+
+
+*do,i,1,11
+
+nsel,s,loc,y,-d/2+Le*(i-1)
+nsel,r,loc,x,-L/2
+*get,nlreal,node,,num,max 
+allsel
+nsel,s,loc,y,-d/2+Le*(i-1)
+nsel,r,loc,x,L/2
+*get,nrreal,node,,num,max 
+allsel
+
+nsel,s,loc,y,-d/2+Le*(i-1)-tole,-d/2+Le*(i-1)+tole
+nsel,r,loc,x,-L/2-tole+dist,-L/2+tole+dist
+*get,nlimg,node,,num,max 
+allsel
+nsel,s,loc,y,-d/2+Le*(i-1)-tole,-d/2+Le*(i-1)+tole
+nsel,r,loc,x,L/2-tole+dist,L/2+tole+dist
+*get,nrimg,node,,num,max 
+allsel
+
+ce,next,0,nlreal,ux,1,nrreal,ux,-cos(kx),nrimg,ux,sin(kx)
+ce,next,0,nlreal,uy,1,nrreal,uy,-cos(kx),nrimg,uy,sin(kx)
+
+ce,next,0,nlimg,ux,1,nrimg,ux,-cos(kx),nrreal,ux,-sin(kx)
+ce,next,0,nlimg,uy,1,nrimg,uy,-cos(kx),nrreal,uy,-sin(kx)
+
+*enddo
+
+
+
+!d,all,uz
+!d,all,rotx
+!d,all,roty
+
+
+
+
+fini
+
+/SOLU   
+ANTYPE,MODAL
+MODOPT,subsp,50,0,0,,OFF   
+PSTRESS,0
+SOLVE 
+
+/POST1
+set,list,2
+set,first
+*get,Fv,active,0,set,freq
+F(j,1) = Fv
+vec(j) = j
+*do,nm,2,nmodes
+set,next
+set,next
+*get,Fv,active,0,set,freq
+F(j,nm) = Fv
+*enddo
+
+
+*if,j,LE,np+1,then
+kx = kx + pi/(np)
+*endif
+*if,j,GT,np+1,and,j,LE,2*np+1,then
+ky = ky + pi/(np)
+*endif
+*if,j,GT,2*np+1,and,j,LE,3*np+1,then
+ky = ky - pi/(np)
+kx = kx - pi/(np)
+*endif
+
+
+
+*enddo
+
+
+*vplot,vec,F,2,3,4,5,6,7,8
+
+!*status,F !to list variable
+
+
+
+
+
+
+
+finish

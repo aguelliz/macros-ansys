@@ -1,0 +1,46 @@
+/prep7
+*ask,i,step,20
+
+*if,i,LE,np+1,then
+kx = (i-1)*pi/(np)
+*endif
+*if,i,GT,np+1,and,i,LE,2*np+1,then
+ky = (i-1-np)*pi/(np)
+*endif
+*if,i,GT,2*np+1,and,i,LE,3*np+1,then
+ky = (3*np-i+1)*pi/(np)
+kx = (3*np-i+1)*pi/(np)
+*endif
+
+!bloch BC
+
+!in y
+ce,1,0,ntreal,ux,1,nbreal,ux,-cos(ky),nbimag,ux,sin(ky)
+ce,2,0,ntreal,uy,1,nbreal,uy,-cos(ky),nbimag,uy,sin(ky)
+ce,3,0,ntreal,rotz,1,nbreal,rotz,-cos(ky),nbimag,rotz,sin(ky)
+
+ce,4,0,ntimag,ux,1,nbimag,ux,-cos(ky),nbreal,ux,-sin(ky)
+ce,5,0,ntimag,uy,1,nbimag,uy,-cos(ky),nbreal,uy,-sin(ky)
+ce,6,0,ntimag,rotz,1,nbimag,rotz,-cos(ky),nbreal,rotz,-sin(ky)
+
+!in x
+ce,7,0,nlreal,ux,1,nrreal,ux,-cos(kx),nrimag,ux,sin(kx)
+ce,8,0,nlreal,uy,1,nrreal,uy,-cos(kx),nrimag,uy,sin(kx)
+ce,9,0,nlreal,rotz,1,nrreal,rotz,-cos(kx),nrimag,rotz,sin(kx)
+
+ce,10,0,nlimag,ux,1,nrimag,ux,-cos(kx),nrreal,ux,-sin(kx)
+ce,11,0,nlimag,uy,1,nrimag,uy,-cos(kx),nrreal,uy,-sin(kx)
+ce,12,0,nlimag,rotz,1,nrimag,rotz,-cos(kx),nrreal,rotz,-sin(kx)
+
+
+d,all,uz
+d,all,rotx
+d,all,roty
+
+fini
+
+/SOLU   
+ANTYPE,MODAL
+MODOPT,subsp,2*nmodes+2,0,0,,OFF   
+PSTRESS,0
+SOLVE 
